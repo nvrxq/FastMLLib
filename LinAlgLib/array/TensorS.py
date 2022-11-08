@@ -18,7 +18,7 @@ class TensorList:
     @classmethod
     def shape(cls, array):
         cls._paramR = len(array)
-        cls._paramC = None if isinstance(array[0], (int, float)) else len(array)
+        cls._paramC = None if isinstance(array[0], (int, float)) else len(array[0])
         if cls._paramC:
             for idx in range(cls._paramR):
                 if len(array[idx]) != cls._paramC:
