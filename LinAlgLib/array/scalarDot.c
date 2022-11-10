@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <Python.h>
 
-int sum(int a, int b){
+double sum(double a, double b){
     return a + b;
 }
 
@@ -23,25 +23,23 @@ static PyObject* scalar_product(PyObject *self, PyObject *args)
     PyObject *pList;
     PyObject *pItem;
     Py_ssize_t n;
-    int i;
-
+    double item;
     if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &pList))
     {
         PyErr_SetString(PyExc_TypeError, "parameter must be a list.");
         return NULL;
     }
     n = PyList_Size(pList);
-    pItem = PyList_GetItem(pList, 1);
-    return Py_BuildValue("i", *pItem);
-    /*for (i=0; i<n; i++) 
+    PyObject* new_array = PyList_New(n);
+    for(int i = 0; i < n; i++)
     {
         pItem = PyList_GetItem(pList, i);
-        if(PyList_SetItem(pList,i,pItem) < 0){
-            return NULL;
-        }
-
+        item = PyFloat_AsDouble(pItem);
+        PyObject*  value_ = Py_BuildValue("d", sum(item, item));
+        PyList_SetItem(new_array, i, value_);
     }
-    */
+    return new_array;
+
 }
 
 
