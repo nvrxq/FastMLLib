@@ -21,10 +21,11 @@ static PyObject* sum_int(PyObject *self, PyObject *args) {
 static PyObject* scalar_product(PyObject *self, PyObject *args)
  {
     PyObject *pList;
+    PyObject *pList2;
     PyObject *pItem;
+    PyObject *pItem2;
     Py_ssize_t n;
-    double item;
-    if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &pList))
+    if (!PyArg_ParseTuple(args, "OO", &pList, &pList2))
     {
         PyErr_SetString(PyExc_TypeError, "parameter must be a list.");
         return NULL;
@@ -34,8 +35,8 @@ static PyObject* scalar_product(PyObject *self, PyObject *args)
     for(int i = 0; i < n; i++)
     {
         pItem = PyList_GetItem(pList, i);
-        item = PyFloat_AsDouble(pItem);
-        PyObject*  value_ = Py_BuildValue("d", sum(item, item));
+        pItem2 = PyList_GetItem(pList2, i);
+        PyObject*  value_ = Py_BuildValue("d", PyFloat_AsDouble(pItem) * PyFloat_AsDouble(pItem2));
         PyList_SetItem(new_array, i, value_);
     }
     return new_array;
