@@ -1,11 +1,26 @@
 from LinAlgLib.array.TensorS import *
+import time 
+a = [float(i) for i in range(10000000)]
+b = TensorList(a)
 
-a = TensorList([24,123,2424])
-print(a[2])
 
-b = Tensor([[1.,2.,3.],[4.,5.,6.]])
-print(b.T())
+start_time = time.time()
+c = b.Dot(b)
+print("--- %s seconds --- LinAlgLib" % (time.time() - start_time))
 
-c = TensorList([1,2,3])
 
-print(a.dot(a))
+def dotd(a,b):
+    sol = []
+    for i in range(len(a)):
+        sol.append(a[i] * b[i])
+    return sol
+
+
+start_time = time.time()
+p = dotd(a,a)
+print("--- %s seconds --- Python" % (time.time() - start_time))
+
+
+start_time = time.time()
+g = [a[i] * a[i] for i in range(len(a))]
+print("--- %s seconds --- Python Generator" % (time.time() - start_time))
