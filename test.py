@@ -1,7 +1,8 @@
 from LinAlgLib.array.TensorS import Tensor, TensorList
 
 a = TensorList([24,123,2424])
-print(f'Shape a : {a.view()}')
+print(a[2])
 
-b = Tensor([[23,21],[223,242], [24,13]])
-print(f'Shape b : {b.view()}')
+
+b = Tensor([[1,2,3],[4,5,6]])
+print(b.T()[0])
