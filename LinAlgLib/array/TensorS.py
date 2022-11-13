@@ -1,3 +1,4 @@
+
 class TensorList:
     def __init__(self, _list: list) -> None:
         '''
@@ -60,4 +61,3 @@ class Tensor(TensorList):
 
 if __name__ == "__main__":
     test = Tensor([[24,21],[214,214,23]])
-    print(test.view())

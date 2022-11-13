@@ -51,7 +51,7 @@ static PyMethodDef methods[] = {
         "Print 'hello world' from a method defined in a C extension."
     },  
     {
-        "dot",scalar_product,METH_VARARGS,
+        "Dot",scalar_product,METH_VARARGS,
         "hz"
     },
 
@@ -63,7 +63,7 @@ static PyMethodDef methods[] = {
 // what it's methods are and where to look for it's method definitions
 static struct PyModuleDef hello_definition = { 
     PyModuleDef_HEAD_INIT,
-    "linsum",
+    "LinAlgLib_C",
     "A Python module that prints 'hello world' from C code.",
     -1, 
     methods
@@ -71,7 +71,7 @@ static struct PyModuleDef hello_definition = {
 
 
 //Важно PyInit_НазваниеЛибы
-PyMODINIT_FUNC PyInit_linsum(void) {
+PyMODINIT_FUNC PyInit_LinAlgLib_C(void) {
     Py_Initialize();
     return PyModule_Create(&hello_definition);
 }
