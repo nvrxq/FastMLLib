@@ -4,7 +4,8 @@
 
 from setuptools import setup, Extension
 
-hello_module = Extension('LinAlgLib_C', sources = ['LinAlg_C.c'])
+hello_module = Extension('LinAlgLib_C', include_dirs = ['/usr/local/include'],
+                    library_dirs = ['/usr/lib/python3/dist-packages'], sources = ['LinAlg_C.c'])
 
 setup(name='hello',
       version='0.1.0',

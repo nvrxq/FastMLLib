@@ -1,3 +1,5 @@
+import LinAlgLib_C
+
 
 class TensorList:
     def __init__(self, _list: list) -> None:
@@ -42,7 +44,8 @@ class TensorList:
         else:
             return self.array[column][rows]
 
-
+    def dot(self,arr):
+        return LinAlgLib_C.Dot(self.array,arr.array)
 
 class Tensor(TensorList):
 
@@ -54,10 +57,15 @@ class Tensor(TensorList):
     def T(self):
         result = [[self.array[j][i] for j in range(self._paramR)] for i in range(self._paramC)]
         return Tensor(result)
+    
+    def d(self):
+        return LinAlgLib_C.d(self.array)
 
 
 
-
+def hello():
+        LinAlgLib_C.func_hello()
 
 if __name__ == "__main__":
     test = Tensor([[24,21],[214,214,23]])
+    
