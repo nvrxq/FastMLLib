@@ -95,6 +95,60 @@ class TensorList:
         else:
             return list(sorted(self.array))[int(self._paramR/2)]
 
+    def bincount(self):
+        result = []
+        buff = []
+        
+        for i in self.array:
+            count = 0
+            if i not in buff:
+                buff.append(i)
+                for j in self.array:
+                    if i == j:
+                        count+=1
+                result.append(count)
+
+        return result
+    
+
+
+    def argmax(self):
+        value, index = max([(v,i) for i,v in enumerate(self.array)])
+        return index
+
+
+
+    def log(self):
+        result = []
+
+        for i in self.array:
+            result.append(1000.0 * ((i ** (1/1000.0)) - 1))
+
+        return result
+    
+
+
+    def accuracy(output, y):
+        hit = 0
+        output = self.argmax(output, axis=1)
+        y = self.argmax(y, axis=1)
+        for y in zip(output, y):
+            if(y[0]==y[1]):
+                hit += 1
+
+        p = (hit*100)/output.shape[0]
+        return p
+    
+
+
+    def ReLu(x, derivative=False):
+        if(derivative==False):
+            return x*(x > 0)
+
+        else:
+            return 1*(x > 0)
+
+
 
 class Tensor(TensorList):
 
