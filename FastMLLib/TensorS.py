@@ -1,6 +1,12 @@
 import LinAlgLib_C
-from utils import (
-    mean
+from FastMLLib.utils import (
+    mean, bincount, log, argmax
+)
+from FastMLLib.metrics import (
+    accuracy
+)
+from FastMLLib.nn import (
+    relu, tanh, sigmoid, forward_activation
 )
 
 
@@ -54,6 +60,14 @@ class TensorList:
 
     def mean(self, axis=0):
         return TensorList(mean(self, axis=axis))
+    
+
+    def log(self):
+        return TensorList(log(self))
+
+    
+    def bincount(self):
+        return TensorList(bincount(self))
 
     # Overload
 
@@ -72,8 +86,10 @@ class TensorList:
         return TensorList([self.array[i] + other.array[i]
                            for i in range(self._paramR)])
 
+
     def __radd__(self, other):
         return TensorList([float(item + other) for item in self.array])
+
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
@@ -83,8 +99,10 @@ class TensorList:
             raise IndexError("Tensors must be similar shape!")
         return TensorList(LinAlgLib_C.Dot(self.array, other.array))
 
+
     def __imul__(self, other):
         return TensorList([float(item * other) for item in self.array])
+
 
     def median(self):
         med = 0
@@ -95,58 +113,35 @@ class TensorList:
         else:
             return list(sorted(self.array))[int(self._paramR/2)]
 
-    def bincount(self):
-        result = []
-        buff = []
-        
-        for i in self.array:
-            count = 0
-            if i not in buff:
-                buff.append(i)
-                for j in self.array:
-                    if i == j:
-                        count+=1
-                result.append(count)
-
-        return result
-    
-
 
     def argmax(self):
-        value, index = max([(v,i) for i,v in enumerate(self.array)])
-        return index
+        return argmax(self)
 
 
+    def relu(self,x,derivative=False):
+        return relu(x,derivative)
 
-    def log(self):
-        result = []
 
-        for i in self.array:
-            result.append(1000.0 * ((i ** (1/1000.0)) - 1))
+    def sigmoid(self, x):
+        return sigmoid(x)
 
-        return result
+
+    def tanh(self, x):
+        return(tanh)
+
+    
+    def forward_activation(self, x, activation_function):
+        return forward_activation(x,activation_function)
+
+
     
 
 
-    def accuracy(output, y):
-        hit = 0
-        output = self.argmax(output, axis=1)
-        y = self.argmax(y, axis=1)
-        for y in zip(output, y):
-            if(y[0]==y[1]):
-                hit += 1
 
-        p = (hit*100)/output.shape[0]
-        return p
+
     
 
 
-    def ReLu(x, derivative=False):
-        if(derivative==False):
-            return x*(x > 0)
-
-        else:
-            return 1*(x > 0)
 
 
 
