@@ -4,10 +4,10 @@
 
 from setuptools import setup, Extension
 
-hello_module = Extension('LinAlgLib_C', include_dirs = ['/usr/local/include'],
+module = Extension('LinAlgLib_C', include_dirs = ['/usr/local/include'],
                     library_dirs = ['/usr/lib/python3/dist-packages'], sources = ['FastML_C/LinAlg_C.c'])
 
-setup(name='hello',
-      version='0.1.0',
-      description='Hello world module written in C',
-      ext_modules=[hello_module])
+setup(name='FastMLLib',
+      version='1.1.0',
+      description='Machine Learning Library',
+      ext_modules=[module])

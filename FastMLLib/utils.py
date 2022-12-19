@@ -1,4 +1,7 @@
 def mean(_tensor, axis=0):
+    '''
+    Calculating list of mean values 
+    '''
     if _tensor.view()[1] is None:
         return _tensor.sum() / _tensor.view()[0]
     else:
@@ -10,6 +13,9 @@ def mean(_tensor, axis=0):
 
 
 def log(_tensor):
+    '''
+    Calculating expon. logarithm
+    '''
     result = []
 
     for i in _tensor.array:
@@ -18,6 +24,9 @@ def log(_tensor):
     return result
 
 def bincount(_tensor):
+    '''
+    Count number of occurrences of each value in array of non-negative ints.
+    '''
     result = []
     buff = []
     
@@ -34,5 +43,31 @@ def bincount(_tensor):
 
 
 def argmax(_tensor):
+    '''
+    Returns the indices of the maximum values along an axis.
+    '''
     value, index = max([(v,i) for i,v in enumerate(_tensor.array)])
     return index
+
+
+def median(_tensor, paramR):
+    '''
+    Compute the median.
+    '''
+    med = 0
+    if _paramR % 2 == 0:
+        for i in _tensor:
+            med += i
+        return med/_paramR
+    else:
+        return list(sorted(_tensor))[int(_paramR/2)]
+
+
+def dot(_tensor,object1):
+    '''
+    Dot product of two arrays
+    '''
+    if _tensor._paramC != object1._paramC:
+            return 0
+
+    return sum(i[0] * i[1] for i in zip(_tensor.array, object1.array))    

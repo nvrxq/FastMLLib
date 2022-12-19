@@ -1,9 +1,9 @@
 import LinAlgLib_C
 from FastMLLib.utils import (
-    mean, bincount, log, argmax
+    mean, bincount, log, argmax, median, dot
 )
 from FastMLLib.metrics import (
-    accuracy
+    accuracy, compute_tp_tn_fn_fp, compute_accuracy, compute_precision, compute_recall, compute_f1_score, compute_sens_spec, MSE, MAE
 )
 from FastMLLib.nn import (
     relu, tanh, sigmoid, forward_activation
@@ -22,6 +22,9 @@ class TensorList:
         self.shape()
 
     def shape(self):
+        '''
+        Return the shape of an array.
+        '''
         self._paramR = len(self.array)
         self._paramC = None if isinstance(
             self.array[0], (int, float)) else len(self.array[0])
@@ -34,15 +37,27 @@ class TensorList:
             pass
 
     def __repr__(self) -> str:
+        '''
+        Return a string representation
+        '''
         return f"FastLinAlg.TensorList:{self.array}"
 
     def __len__(self):
+        '''
+        Find the length of Tensor data type
+        '''
         return len(self.array)
 
     def view(self):
+        '''
+        New view of array with the same data.
+        '''
         return (self._paramR, self._paramC)
 
     def __getitem__(self, column, rows=None):
+        '''
+        Return self[key].
+        '''
         if rows is None:
             return self.array[column]
         else:
@@ -50,23 +65,35 @@ class TensorList:
 
     def dot(self, object1):
         # return LinAlgLib_C.Dot(self.array, object2.array)
-        if self._paramC != object1._paramC:
-            return 0
-
-        return sum(i[0] * i[1] for i in zip(self.array, object1.array))
+        '''
+        Links with utils.py for dot function
+        '''
+        return dot(self,object1)
 
     def sum(self):
+        '''
+        Links with utils.py for sum function
+        '''
         return sum(self.array)
 
     def mean(self, axis=0):
+        '''
+        Links with utils.py for mean function
+        '''
         return TensorList(mean(self, axis=axis))
     
 
     def log(self):
+        '''
+        Links with utils.py for log function
+        '''
         return TensorList(log(self))
 
     
     def bincount(self):
+        '''
+        Links with utils.py for bincount function
+        '''
         return TensorList(bincount(self))
 
     # Overload
@@ -88,10 +115,16 @@ class TensorList:
 
 
     def __radd__(self, other):
+        '''
+        Add other to self, and return a new masked array.
+        '''
         return TensorList([float(item + other) for item in self.array])
 
 
     def __mul__(self, other):
+        '''
+        Returns self*value
+        '''
         if isinstance(other, (int, float)):
             return self.__imul__(other)
 
@@ -101,43 +134,123 @@ class TensorList:
 
 
     def __imul__(self, other):
+        '''
+        Returns self*=value.
+        '''
         return TensorList([float(item * other) for item in self.array])
 
 
     def median(self):
-        med = 0
-        if self._paramR % 2 == 0:
-            for i in self.array:
-                med += i
-            return med/self._paramR
-        else:
-            return list(sorted(self.array))[int(self._paramR/2)]
+        '''
+        Links with utils.py to median function
+        '''
+        return median(self.array,self.paramR)
 
 
     def argmax(self):
+        '''
+        Links with utils.py to tanh activation function
+        '''
         return argmax(self)
 
 
     def relu(self,x,derivative=False):
+        '''
+        Links with nn.py to relu activation function
+        '''
         return relu(x,derivative)
 
 
     def sigmoid(self, x):
+        '''
+        Links with nn.py to sigmoid activation function
+        '''
         return sigmoid(x)
 
 
     def tanh(self, x):
+        '''
+        Links with nn.py to tanh activation function
+        '''
         return(tanh)
 
     
     def forward_activation(self, x, activation_function):
+        '''
+        Links with nn.py to choosing activation function
+        '''
         return forward_activation(x,activation_function)
 
 
-    
+    def accuracy(self, _tensor):
+        '''
+        Links with metrics.py accuracy from output and true
+        '''
+        return accuracy(self, _tensor)
+        
+
+    def compute_tp_tn_fn_fp(self, _tensor):
+        '''
+        Links with metrics.py
+        True positive
+        False positive
+        False negative
+        True negative
+        '''
+        return compute_tp_tn_fn_fp(self, _tensor)
 
 
+    def compute_accuracy(tp, tn, fn, fp):
+        '''
+        Linking with metrics.py accuracy from 
+        True positive
+        False positive
+        False negative
+        True negative
+        '''
+        return compute_accuracy(tp, tn, fn, fp)
 
+
+    def compute_precision(tp, fp):
+        '''
+        Links with metrics.py precision 
+        '''
+        return compute_precision(tp, fp)
+
+        
+    def compute_recall(tp, fn):
+        '''
+        Links with metrics.py Recall 
+        '''
+        return compute_recall(tp, fn)
+
+
+    def compute_f1_score(self, _tensor):
+        '''
+        Links with metrics.py f1 score
+        '''
+        return compute_f1_score(self, _tensor)
+
+
+    def compute_sens_spec(tp,tn,fp,fn):
+        '''
+        Links with metrics.py Sensitivity and Specificity
+        '''
+        return compute_sens_spec(tp,tn,fp,fn)
+
+
+    def MSE(self, _tensor):
+        '''
+        Links with metrics.py mean squared error
+        '''
+        return MSE(self, _tensor)
+
+
+    def MAE(self, _tensor):
+        '''
+        Links with metrics.py mean absolute error
+        '''
+        return MAE(self, _tensor)
 
     
 
