@@ -23,20 +23,23 @@ def log(_tensor):
 
     return result
 
+
+
+
 def bincount(_tensor):
     '''
     Count number of occurrences of each value in array of non-negative ints.
     '''
     result = []
     buff = []
-    
+
     for i in _tensor.array:
         count = 0
         if i not in buff:
             buff.append(i)
             for j in _tensor.array:
                 if i == j:
-                    count+=1
+                    count += 1
             result.append(count)
 
     return result
@@ -46,7 +49,7 @@ def argmax(_tensor):
     '''
     Returns the indices of the maximum values along an axis.
     '''
-    value, index = max([(v,i) for i,v in enumerate(_tensor.array)])
+    value, index = max([(v, i) for i, v in enumerate(_tensor.array)])
     return index
 
 
@@ -63,11 +66,22 @@ def median(_tensor, paramR):
         return list(sorted(_tensor))[int(_paramR/2)]
 
 
-def dot(_tensor,object1):
+def dot(_tensor, object1):
     '''
     Dot product of two arrays
     '''
     if _tensor._paramC != object1._paramC:
-            return 0
+        return 0
 
-    return sum(i[0] * i[1] for i in zip(_tensor.array, object1.array))    
+    return sum(i[0] * i[1] for i in zip(_tensor.array, object1.array))
+
+
+def square(_tensor):
+    return [item**2 for item in _tensor]
+
+
+def summary(_tensor):
+    return sum(_tensor)
+
+def division(_tensor, scalar):
+    return [item / scalar for item in _tensor]

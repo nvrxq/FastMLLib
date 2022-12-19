@@ -1,16 +1,20 @@
 import LinAlgLib_C
-from FastMLLib.utils import (
-    mean, bincount, log, argmax, median, dot
+
+from utils import (
+    mean, bincount, log, argmax, median, dot, square,
+    summary, division
 )
-from FastMLLib.metrics import (
+from metrics import (
     accuracy, compute_tp_tn_fn_fp, compute_accuracy, compute_precision, compute_recall, compute_f1_score, compute_sens_spec, MSE, MAE
 )
-from FastMLLib.nn import (
-    relu, tanh, sigmoid, forward_activation
+from nn import (
+    relu, tanh, sigmoid, forward_activation,
 )
 
 
 class TensorList:
+
+
     def __init__(self, _list: list) -> None:
         '''
         TensorList
@@ -36,11 +40,14 @@ class TensorList:
         else:
             pass
 
-    def __repr__(self) -> str:
+    def item(self):
+        return self.array[0]
+
+    def __str__(self) -> str:
         '''
         Return a string representation
         '''
-        return f"FastLinAlg.TensorList:{self.array}"
+        return f"{self.array}"
 
     def __len__(self):
         '''
@@ -68,20 +75,21 @@ class TensorList:
         '''
         Links with utils.py for dot function
         '''
-        return dot(self,object1)
+        return dot(self, object1)
 
     def sum(self):
         '''
         Links with utils.py for sum function
         '''
-        return sum(self.array)
+        if self._paramC is None:
+            return TensorList([summary(self.array)])
+        return Tensor([summary(item) for item in self.array])
 
     def mean(self, axis=0):
         '''
         Links with utils.py for mean function
         '''
         return TensorList(mean(self, axis=axis))
-    
 
     def log(self):
         '''
@@ -89,7 +97,6 @@ class TensorList:
         '''
         return TensorList(log(self))
 
-    
     def bincount(self):
         '''
         Links with utils.py for bincount function
@@ -97,6 +104,13 @@ class TensorList:
         return TensorList(bincount(self))
 
     # Overload
+
+
+    def __truediv__(self, scalar):
+        if self._paramC is None:
+            return TensorList(division(self.array, scalar))
+        return Tensor([division(item, scalar) for item in self.array])
+
 
     def __add__(self, other):
         '''
@@ -113,13 +127,16 @@ class TensorList:
         return TensorList([self.array[i] + other.array[i]
                            for i in range(self._paramR)])
 
+    def squared(self):
+        if self._paramC is None:
+            return TensorList(square(self))
+        return Tensor([square(item) for item in self.array])
 
     def __radd__(self, other):
         '''
         Add other to self, and return a new masked array.
         '''
         return TensorList([float(item + other) for item in self.array])
-
 
     def __mul__(self, other):
         '''
@@ -132,20 +149,17 @@ class TensorList:
             raise IndexError("Tensors must be similar shape!")
         return TensorList(LinAlgLib_C.Dot(self.array, other.array))
 
-
     def __imul__(self, other):
         '''
         Returns self*=value.
         '''
         return TensorList([float(item * other) for item in self.array])
 
-
     def median(self):
         '''
         Links with utils.py to median function
         '''
-        return median(self.array,self.paramR)
-
+        return median(self.array, self.paramR)
 
     def argmax(self):
         '''
@@ -153,13 +167,11 @@ class TensorList:
         '''
         return argmax(self)
 
-
-    def relu(self,x,derivative=False):
+    def relu(self, x, derivative=False):
         '''
         Links with nn.py to relu activation function
         '''
-        return relu(x,derivative)
-
+        return relu(x, derivative)
 
     def sigmoid(self, x):
         '''
@@ -167,27 +179,23 @@ class TensorList:
         '''
         return sigmoid(x)
 
-
     def tanh(self, x):
         '''
         Links with nn.py to tanh activation function
         '''
-        return(tanh)
+        return (tanh)
 
-    
     def forward_activation(self, x, activation_function):
         '''
         Links with nn.py to choosing activation function
         '''
-        return forward_activation(x,activation_function)
-
+        return forward_activation(x, activation_function)
 
     def accuracy(self, _tensor):
         '''
         Links with metrics.py accuracy from output and true
         '''
         return accuracy(self, _tensor)
-        
 
     def compute_tp_tn_fn_fp(self, _tensor):
         '''
@@ -199,7 +207,6 @@ class TensorList:
         '''
         return compute_tp_tn_fn_fp(self, _tensor)
 
-
     def compute_accuracy(tp, tn, fn, fp):
         '''
         Linking with metrics.py accuracy from 
@@ -210,20 +217,17 @@ class TensorList:
         '''
         return compute_accuracy(tp, tn, fn, fp)
 
-
     def compute_precision(tp, fp):
         '''
         Links with metrics.py precision 
         '''
         return compute_precision(tp, fp)
 
-        
     def compute_recall(tp, fn):
         '''
         Links with metrics.py Recall 
         '''
         return compute_recall(tp, fn)
-
 
     def compute_f1_score(self, _tensor):
         '''
@@ -231,13 +235,11 @@ class TensorList:
         '''
         return compute_f1_score(self, _tensor)
 
-
-    def compute_sens_spec(tp,tn,fp,fn):
+    def compute_sens_spec(tp, tn, fp, fn):
         '''
         Links with metrics.py Sensitivity and Specificity
         '''
-        return compute_sens_spec(tp,tn,fp,fn)
-
+        return compute_sens_spec(tp, tn, fp, fn)
 
     def MSE(self, _tensor):
         '''
@@ -245,17 +247,11 @@ class TensorList:
         '''
         return MSE(self, _tensor)
 
-
     def MAE(self, _tensor):
         '''
         Links with metrics.py mean absolute error
         '''
         return MAE(self, _tensor)
-
-    
-
-
-
 
 
 class Tensor(TensorList):
@@ -299,8 +295,10 @@ class Tensor(TensorList):
             # median for axises and reshape
 
 
+
+
 if __name__ == "__main__":
     #test = Tensor([[24, 21], [214, 214, 23]])
     test = TensorList([1, 2, 3])
     test2 = Tensor([[1, 2], [3, 4]])
-    print(test2.mean())
+    print(test2.squared().mean(axis = 1))
