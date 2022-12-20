@@ -8,7 +8,7 @@ from metrics import (
     accuracy, compute_tp_tn_fn_fp, compute_accuracy, compute_precision, compute_recall, compute_f1_score, compute_sens_spec, MSE, MAE
 )
 from nn import (
-    relu, tanh, sigmoid, forward_activation,
+    relu, tanh, sigmoid, forward_activation,calc_grad
 )
 
 
@@ -75,7 +75,7 @@ class TensorList:
         '''
         Links with utils.py for dot function
         '''
-        return dot(self, object1)
+        return TensorList([dot(self, object1)])
 
     def sum(self):
         '''
@@ -104,6 +104,12 @@ class TensorList:
         return TensorList(bincount(self))
 
     # Overload
+
+    def __sub__(self, other):
+        result = []
+        for a in zip(self.array, other.array):
+            result.append(a[0]-a[1])
+        return TensorList(result)
 
 
     def __truediv__(self, scalar):
@@ -277,7 +283,8 @@ class Tensor(TensorList):
             for j in range(object1._paramC):
                 for k in range(self._paramC):
                     C[i][j] += self.array[i][k] * object1.array[k][j]
-        return C
+
+        return TensorList([C[idx][0] for idx in range(len(C))])
 
     def flatten(self):
         return [i for j in self.array for i in j]
@@ -294,11 +301,20 @@ class Tensor(TensorList):
 
             # median for axises and reshape
 
+    def to_TensorList(self):
+        if self._paramR == 1:
+            return TensorList(self.array[0])
+
 
 
 
 if __name__ == "__main__":
     #test = Tensor([[24, 21], [214, 214, 23]])
-    test = TensorList([1, 2, 3])
-    test2 = Tensor([[1, 2], [3, 4]])
-    print(test2.squared().mean(axis = 1))
+    test = TensorList([6])
+    test2 = TensorList([1,2])
+    w = TensorList([1, 1])
+    for epoch in range(10):
+        predict = test2.dot(w)
+        loss = TensorList(calc_grad((predict - test).item(), test2)) * 0.1
+        w = w - loss
+    print(predict)

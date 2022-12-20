@@ -70,10 +70,8 @@ def dot(_tensor, object1):
     '''
     Dot product of two arrays
     '''
-    if _tensor._paramC != object1._paramC:
-        return 0
 
-    return sum(i[0] * i[1] for i in zip(_tensor.array, object1.array))
+    return sum(i[0] * i[1] for i in zip(_tensor, object1))
 
 
 def square(_tensor):

@@ -31,3 +31,8 @@ def forward_activation(x, activation_function):
     return tanh(x)
   elif activation_function == "relu":
     return relu(x)
+
+
+
+def calc_grad(delta, x_batch):
+  return [delta * item for item in x_batch.array]
